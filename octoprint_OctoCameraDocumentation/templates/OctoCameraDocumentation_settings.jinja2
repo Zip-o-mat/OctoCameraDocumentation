@@ -26,6 +26,15 @@
         <div class="controls">
             <input type="text" class="input-block-level" data-bind="value: settings.plugins.OctoCameraDocumentation.overlap" id="settings-overlap">
         </div>
+        <label class="control-label" for="settings-stitching_active">{{ _('Picture stitching: ') }}</label>
+        <div class="controls">
+            <input type="checkbox" name="toggleEnable" class="input-block-level" data-bind="checked: settings.plugins.OctoCameraDocumentation.stitching_active" id="settings-stitching_active">
+        </div>
+        <label class="control-label" for="settings-stitching_method">Stitching Method</label>
+        <div class="controls">
+            <select id="settings-stitching_method" data-bind="value: settings.plugins.OctoCameraDocumentation.stitching_method, options: stitching_method_values, optionsText: 'name', optionsValue: 'key'">
+            </select>
+        </div>
     </div>
 
     <h3>{{ _('Extruders') }}</h3>

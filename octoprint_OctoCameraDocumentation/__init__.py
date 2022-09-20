@@ -92,6 +92,7 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
         self.image_array = [] #Stores the incoming images in an array
         self.MergedImage = None #Is created by stitching the tile images together
 
+
     def on_after_startup(self):
         #used for communication to UI
         self._pluginManager = octoprint.plugin.plugin_manager()
@@ -111,6 +112,8 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
             "picture_width": 800,
             "picture_height": 800,
             "overlap": 20,
+            "stitching_active": True,
+            "stitching_method": "Merge",
             "extruders" : {
                 "plastic": 0,
                 "conductive": 1
@@ -270,10 +273,12 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
         else:
             # Do image processing
             layer_config = self.GridInfoList[self.currentLayer]
-            if len(self.image_array) > 0:
+            if len(self.image_array) > 0 and (self._settings.get(["stitching_active"])):
                 image_stitcher = ImageStitcher(layer_config[6], layer_config[7], self._settings.get_int(["overlap"]), self.image_array)
-                #layer_image = image_stitcher.merge_trivial()
-                layer_image = image_stitcher.merge_stitching()
+                if self._settings.get(["stitching_method"]) == "TRIVIAL":
+                    layer_image = image_stitcher.merge_trivial()
+                if self._settings.get(["stitching_method"]) == "MERGE":
+                    layer_image = image_stitcher.merge_stitching()
                 cv2.imwrite(os.path.join(self.currentPrintJobDir, "layer"+str(self.currentLayer)+".png"), layer_image)
             self.image_array = []
 

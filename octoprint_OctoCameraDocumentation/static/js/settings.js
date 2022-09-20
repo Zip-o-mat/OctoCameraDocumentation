@@ -2,6 +2,10 @@ $(function() {
     function OctoCameraDocumentationSettingsViewModel(parameters) {
         var self = this;
         self.settings = parameters[0];
+        self.stitching_method_values = ko.observable([
+            {key: "TRIVIAL", name: "Trivial"},
+            {key: "MERGE", name: "Merge"},
+        ]);
 
         // This will get called before the ViewModel gets bound to the DOM, but after its depedencies have
         // already been initialized. It is especially guaranteed that this method gets called _after_ the settings
