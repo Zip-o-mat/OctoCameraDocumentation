@@ -108,6 +108,7 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
 
     def get_settings_defaults(self):
         return{
+            "active": True,
             "target_folder": "C:\Desktop",
             "picture_width": 800,
             "picture_height": 800,
@@ -118,7 +119,10 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
                 "plastic": 0,
                 "conductive": 1
             },
-            "active": True
+            "gcode" : {
+                "prepic": "",
+                "postpic": "",
+            },
         }
 
     def get_template_configs(self):
@@ -139,7 +143,7 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
         self.mode = "resolution_get"
 
         # Get an image to determine the camera resolution
-        self.get_camera_image(0, 0, self.get_camera_image_callback, True)
+        self.get_camera_image(0, 0, "", "", self.get_camera_image_callback, True)
 
         self.our_pic_width = None
         self.our_pic_height = None
@@ -234,7 +238,7 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
                     if(self._printer.is_printing() or self._printer.is_resuming()):
                         self._printer.pause_print()
                     self._logger.info( "Qeued command to start the Camera documentation" )
-                    self.get_camera_image(elem.x, elem.y, self.get_camera_image_callback, True)
+                    self.get_camera_image(elem.x, elem.y, self._settings.get(["gcode", "prepic"]), self._settings.get(["gcode", "postpic"]), self.get_camera_image_callback, True)
 
         if "M945" in cmd:
             if(self._settings.get(["active"])):
@@ -255,7 +259,7 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
             # Get new element and continue taking pictures if qeue not empty
             elem = self.getNewQeueElem()
             if(elem):
-                self.get_camera_image(elem.x, elem.y, self.get_camera_image_callback, False)
+                self.get_camera_image(elem.x, elem.y, self._settings.get(["gcode", "prepic"]), self._settings.get(["gcode", "postpic"]), self.get_camera_image_callback, False)
 
         # Get the resolution for the settings button here
         if(self.mode == "resolution_get"):
