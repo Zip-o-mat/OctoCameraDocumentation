@@ -45,7 +45,7 @@
         </div>
         <label class="control-label" for="repetitions">{{ _('Picture Repetitions: ') }}</label>
         <div class="controls">
-            <input data-bind="value: settings.plugins.OctoCameraDocumentation.repetitions" id="repetitions" type="number" step="1" min="1" max="4" class="input-mini text-right">
+            <input data-bind="value: settings.plugins.OctoCameraDocumentation.repetitions" id="repetitions" type="number" step="1" min="1" max="5" class="input-mini text-right">
         </div>
     </div>
 
@@ -68,11 +68,11 @@
     <div class="control-group">
         <label class="control-label" for="gcode.prepic1">{{ _('Pre Picture GCode 1: ') }}</label>
         <div class="controls">
-            <textarea rows="1" class="block" id="gcode.prepic1" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.prepic"></textarea>
+            <textarea rows="1" class="block" id="gcode.prepic1" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.prepic1"></textarea>
         </div>
         <label class="control-label" for="gcode.postpic1">{{ _('Post Picture GCode 1: ') }}</label>
         <div class="controls">
-            <textarea rows="1" class="block" id="gcode.postpic1" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.postpic"></textarea>
+            <textarea rows="1" class="block" id="gcode.postpic1" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.postpic1"></textarea>
         </div>
         <div data-bind="visible: settings.plugins.OctoCameraDocumentation.repetitions() > 1">
             <label class="control-label" for="gcode.prepic2">{{ _('Pre Picture GCode 2: ') }}</label>
@@ -102,6 +102,16 @@
             <label class="control-label" for="gcode.postpic4">{{ _('Post Picture GCode 4: ') }}</label>
             <div class="controls">
                 <textarea rows="1" class="block" id="gcode.postpic4" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.postpic4"></textarea>
+            </div>
+        </div>
+        <div data-bind="visible: settings.plugins.OctoCameraDocumentation.repetitions() > 4">
+            <label class="control-label" for="gcode.prepic5">{{ _('Pre Picture GCode 5: ') }}</label>
+            <div class="controls">
+                <textarea rows="1" class="block" id="gcode.prepic5" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.prepic5"></textarea>
+            </div>
+            <label class="control-label" for="gcode.postpic5">{{ _('Post Picture GCode 5: ') }}</label>
+            <div class="controls">
+                <textarea rows="1" class="block" id="gcode.postpic5" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.postpic5"></textarea>
             </div>
         </div>
     </div>
