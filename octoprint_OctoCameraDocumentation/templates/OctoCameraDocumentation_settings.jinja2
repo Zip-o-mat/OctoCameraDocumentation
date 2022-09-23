@@ -10,7 +10,7 @@
     <h3>{{ _('Folders') }}</h3>
 
     <div class="control-group">
-        <label class="control-label" for="settings-folderUploads">{{ _('Picture Target Folder') }}</label>
+        <label class="control-label" for="settings-folderUploads">{{ _('Picture Target Folder: ') }}</label>
         <div class="controls">
             <input type="text" class="input-block-level" data-bind="value: settings.plugins.OctoCameraDocumentation.target_folder" id="settings-target-folder">
         </div>
@@ -38,22 +38,26 @@
         <div class="controls">
             <input type="checkbox" name="toggleEnable" class="input-block-level" data-bind="checked: settings.plugins.OctoCameraDocumentation.stitching_active" id="settings-stitching_active">
         </div>
-        <label class="control-label" for="settings-stitching_method">Stitching Method</label>
+        <label class="control-label" for="settings-stitching_method">{{ _('Stitching Method: ') }}</label>
         <div class="controls">
             <select id="settings-stitching_method" data-bind="value: settings.plugins.OctoCameraDocumentation.stitching_method, options: stitching_method_values, optionsText: 'name', optionsValue: 'key'">
             </select>
+        </div>
+        <label class="control-label" for="repetitions">{{ _('Picture Repetitions: ') }}</label>
+        <div class="controls">
+            <input data-bind="value: settings.plugins.OctoCameraDocumentation.repetitions" id="repetitions" type="number" step="1" min="1" max="4" class="input-mini text-right">
         </div>
     </div>
 
     <h3>{{ _('Extruders') }}</h3>
     <div class="row-fluid">
-        <label class="control-label" for="extruders.plastic">Plastic Extruder</label>
+        <label class="control-label" for="extruders.plastic">{{ _('Plastic Extruder: ') }}</label>
         <div class="controls">
             <input id="extruders.plastic" type="number" step="1" class="input-mini text-right" data-bind="value: settings.plugins.OctoCameraDocumentation.extruders.plastic">
         </div>
     </div>
     <div class="row-fluid">
-        <label class="control-label" for="extruders.conductive">Conductive Extruder</label>
+        <label class="control-label" for="extruders.conductive">{{ _('Conductive Extruder: ') }}</label>
         <div class="controls">
             <input id="extruders.conductive" type="number" step="1" class="input-mini text-right" data-bind="value: settings.plugins.OctoCameraDocumentation.extruders.conductive">
         </div>
@@ -62,14 +66,43 @@
     <h3>{{ _('GCode') }}</h3>
 
     <div class="control-group">
-        <label class="control-label" for="gcode.prepic">{{ _('Pre Picture GCode: ') }}</label>
+        <label class="control-label" for="gcode.prepic1">{{ _('Pre Picture GCode 1: ') }}</label>
         <div class="controls">
-            <textarea rows="1" class="block" id="gcode.prepic" data-bind="value: settings.plugins.OctoPNP.gcode.prepic"></textarea>
+            <textarea rows="1" class="block" id="gcode.prepic1" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.prepic"></textarea>
         </div>
-        <label class="control-label" for="gcode.postpic">{{ _('Post Picture GCode: ') }}</label>
+        <label class="control-label" for="gcode.postpic1">{{ _('Post Picture GCode 1: ') }}</label>
         <div class="controls">
-            <textarea rows="1" class="block" id="gcode.postpic" data-bind="value: settings.plugins.OctoPNP.gcode.postpic"></textarea>
+            <textarea rows="1" class="block" id="gcode.postpic1" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.postpic"></textarea>
+        </div>
+        <div data-bind="visible: settings.plugins.OctoCameraDocumentation.repetitions() > 1">
+            <label class="control-label" for="gcode.prepic2">{{ _('Pre Picture GCode 2: ') }}</label>
+            <div class="controls">
+                <textarea rows="1" class="block" id="gcode.prepic2" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.prepic2"></textarea>
+            </div>
+            <label class="control-label" for="gcode.postpic2">{{ _('Post Picture GCode 2: ') }}</label>
+            <div class="controls">
+                <textarea rows="1" class="block" id="gcode.postpic2" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.postpic2"></textarea>
+            </div>
+        </div>
+        <div data-bind="visible: settings.plugins.OctoCameraDocumentation.repetitions() > 2">
+            <label class="control-label" for="gcode.prepic3">{{ _('Pre Picture GCode 3: ') }}</label>
+            <div class="controls">
+                <textarea rows="1" class="block" id="gcode.prepic3" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.prepic3"></textarea>
+            </div>
+            <label class="control-label" for="gcode.postpic3">{{ _('Post Picture GCode 3: ') }}</label>
+            <div class="controls">
+                <textarea rows="1" class="block" id="gcode.postpic3" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.postpic3"></textarea>
+            </div>
+        </div>
+        <div data-bind="visible: settings.plugins.OctoCameraDocumentation.repetitions() > 3">
+            <label class="control-label" for="gcode.prepic4">{{ _('Pre Picture GCode 4: ') }}</label>
+            <div class="controls">
+                <textarea rows="1" class="block" id="gcode.prepic4" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.prepic4"></textarea>
+            </div>
+            <label class="control-label" for="gcode.postpic4">{{ _('Post Picture GCode 4: ') }}</label>
+            <div class="controls">
+                <textarea rows="1" class="block" id="gcode.postpic4" data-bind="value: settings.plugins.OctoCameraDocumentation.gcode.postpic4"></textarea>
+            </div>
         </div>
     </div>
-    
 </form>

@@ -92,6 +92,8 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
         self.image_array = [] #Stores the incoming images in an array
         self.MergedImage = None #Is created by stitching the tile images together
 
+        self.repetition = 1 #Stores the current repetition
+        self.elem = None #Stores the current element
 
     def on_after_startup(self):
         #used for communication to UI
@@ -115,13 +117,20 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
             "overlap": 20,
             "stitching_active": True,
             "stitching_method": "Merge",
+            "repetitions": 1,
             "extruders" : {
                 "plastic": 0,
                 "conductive": 1
             },
             "gcode" : {
-                "prepic": "",
-                "postpic": "",
+                "prepic1": "",
+                "postpic1": "",
+                "prepic2": "",
+                "postpic2": "",
+                "prepic3": "",
+                "postpic3": "",
+                "prepic4": "",
+                "postpic4": "",
             },
         }
 
@@ -229,16 +238,19 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
 
         if "M942" in cmd:
             if(self._settings.get(["active"])):
+                print(self._settings.get(["repetitions"]))
+                self._logger.info("Start Layer documentation with %d repetitions", self._settings.get_int(["repetitions"]))
                 self.lastTool = self.currentTool 
                 # Create the qeue for the printer camera coordinates
                 self.qeue = deque(self.CameraGridCoordsList[self.currentLayer])
-                elem = self.getNewQeueElem()
-                if(elem):
+                self.elem = self.getNewQeueElem()
+                self.repetition = 1
+                if(self.elem):
                     # Pause the print to prevent interruptions from octoprint
                     if(self._printer.is_printing() or self._printer.is_resuming()):
                         self._printer.pause_print()
                     self._logger.info( "Qeued command to start the Camera documentation" )
-                    self.get_camera_image(elem.x, elem.y, self._settings.get(["gcode", "prepic"]), self._settings.get(["gcode", "postpic"]), self.get_camera_image_callback, True)
+                    self.get_camera_image(self.elem.x, self.elem.y, self._settings.get(["gcode", "prepic" + str(self.repetition)]), self._settings.get(["gcode", "postpic" + str(self.repetition)]), self.get_camera_image_callback, True)
 
         if "M945" in cmd:
             if(self._settings.get(["active"])):
@@ -256,10 +268,18 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
             # Copy found files over to the target destination folder
             self.saveImageFiles(img)
             self._logger.info( "Saved image to: %s", self.getBasePath() )
-            # Get new element and continue taking pictures if qeue not empty
-            elem = self.getNewQeueElem()
-            if(elem):
-                self.get_camera_image(elem.x, elem.y, self._settings.get(["gcode", "prepic"]), self._settings.get(["gcode", "postpic"]), self.get_camera_image_callback, False)
+            #
+            if self._settings.get_int(["repetitions"]) > self.repetition:
+                #next image with new repetition
+                self.repetition += 1
+            else:
+                #set repetition back to 0 for next position
+                self.repetition = 0
+                # Get new element and continue taking pictures if qeue not empty
+                self.elem = self.getNewQeueElem()
+                        
+            if(self.elem):
+                self.get_camera_image(self.elem.x, self.elem.y, self._settings.get(["gcode", "prepic" + str(self.repetition)]), self._settings.get(["gcode", "postpic" + str(self.repetition)]), self.get_camera_image_callback, False)
 
         # Get the resolution for the settings button here
         if(self.mode == "resolution_get"):
@@ -301,7 +321,10 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
             self._logger.error("No valid image was handed to the plugin")
             return
         # save the image
-        dest = os.path.join(self.currentPrintJobDir, 'Layer_{}'.format(self.currentLayer) + '_Tile_{}'.format(self.gridIndex) + '.jpg')
+        if self._settings.get_int(["repetitions"]) > 1:
+            dest = os.path.join(self.currentPrintJobDir, 'Layer_{}'.format(self.currentLayer) + '_Tile_{}'.format(self.gridIndex) + '_{}'.format(self.repetition) + '.jpg')
+        else:
+            dest = os.path.join(self.currentPrintJobDir, 'Layer_{}'.format(self.currentLayer) + '_Tile_{}'.format(self.gridIndex) + '.jpg')
         cv2.imwrite(dest, img)
         # and store into array for later processing
         self.image_array.append(img)
