@@ -274,7 +274,7 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
                 self.repetition += 1
             else:
                 #set repetition back to 0 for next position
-                self.repetition = 0
+                self.repetition = 1
                 # Get new element and continue taking pictures if qeue not empty
                 self.elem = self.getNewQeueElem()
                         
