@@ -131,6 +131,8 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
                 "postpic3": "",
                 "prepic4": "",
                 "postpic4": "",
+                "prepic5": "",
+                "postpic5": "",
             },
         }
 
