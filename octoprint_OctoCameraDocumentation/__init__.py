@@ -324,9 +324,16 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
             return
         # save the image
         if self._settings.get_int(["repetitions"]) > 1:
-            dest = os.path.join(self.currentPrintJobDir, 'Layer_{}'.format(self.currentLayer) + '_Tile_{}'.format(self.gridIndex) + '_{}'.format(self.repetition) + '.jpg')
+            dest = os.path.join(self.currentPrintJobDir, 'Layer_{}'.format(self.currentLayer) + '_Tile_{}'.format(self.gridIndex) + '_{}'.format(self.repetition))
         else:
-            dest = os.path.join(self.currentPrintJobDir, 'Layer_{}'.format(self.currentLayer) + '_Tile_{}'.format(self.gridIndex) + '.jpg')
+            dest = os.path.join(self.currentPrintJobDir, 'Layer_{}'.format(self.currentLayer) + '_Tile_{}'.format(self.gridIndex))
+        
+        # add the png ending if the image is a 16bit image
+        if img.dtype == 'uint16':
+            dest += '.png'
+        else:
+            dest += '.jpg'
+
         cv2.imwrite(dest, img)
         # and store into array for later processing
         self.image_array.append(img)
