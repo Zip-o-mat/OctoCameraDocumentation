@@ -2,3 +2,4 @@ OctoPrint
 numpy
 opencv-python
 sklearn
+pillow
