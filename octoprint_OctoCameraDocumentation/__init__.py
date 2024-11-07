@@ -32,6 +32,7 @@ import json
 import cv2
 import numpy as np
 import regex as re
+from PIL import Image
 
 import time
 import datetime
@@ -318,25 +319,23 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
             return(None)
 
     def saveImageFiles(self, img):
-        # sometimes this function is called with an invalid image
-        if type(img) is not np.ndarray: 
-            self._logger.error("No valid image was handed to the plugin")
-            return
+        # check if image is a RGB or a grayscale image
+        if (img.mode == "RGB"):
+            cv_img = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+            ftype = 'jpg'
+        else:
+            cv_img = np.array(img)
+            ftype = 'png'
         # save the image
         if self._settings.get_int(["repetitions"]) > 1:
-            dest = os.path.join(self.currentPrintJobDir, 'Layer_{}'.format(self.currentLayer) + '_Tile_{}'.format(self.gridIndex) + '_{}'.format(self.repetition))
+            dest = os.path.join(self.currentPrintJobDir, 'Layer_{}'.format(self.currentLayer) + '_Tile_{}'.format(self.gridIndex) + '_{}'.format(self.repetition) + '.' + ftype)
         else:
-            dest = os.path.join(self.currentPrintJobDir, 'Layer_{}'.format(self.currentLayer) + '_Tile_{}'.format(self.gridIndex))
-        
-        # add the png ending if the image is a 16bit image
-        if img.dtype == 'uint16':
-            dest += '.png'
-        else:
-            dest += '.jpg'
+            dest = os.path.join(self.currentPrintJobDir, 'Layer_{}'.format(self.currentLayer) + '_Tile_{}'.format(self.gridIndex) + '.' + ftype)
 
-        cv2.imwrite(dest, img)
-        # and store into array for later processing
-        self.image_array.append(img)
+        # save the image with pillow
+        img.save(dest)
+        # and store into array as numpy array for later processing
+        self.image_array.append(cv_img)
 
     def getBasePath(self):
         timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d__%H'+'h'+'_%M'+'m'+'_%S'+'s')
@@ -358,7 +357,10 @@ class OctoCameraDocumentation(octoprint.plugin.StartupPlugin,
     This function was copypasted from https://stackoverflow.com/questions/8032642/how-to-obtain-image-size-using-standard-python-class-without-using-external-lib
     :param fname: Contains the filename of the file """
     def _get_image_size(self, img):
-        if type(img) is np.ndarray:
+        # check if image is a PIL image
+        if type(img) is Image.Image:
+            return img.size[0], img.size[1]
+        elif type(img) is np.ndarray:
             return img.shape[1], img.shape[0]
         else:
             return 0,0
